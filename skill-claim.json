@@ -1,0 +1,138 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Insurance Claim Skill",
+      "version": "1.0.0",
+      "description": "API for querying and submitting insurance claims."
+    },
+    "paths": {
+      "/query": {
+        "post": {
+          "summary": "Retrieve insurance claim details",
+          "operationId": "getInsuranceClaimDetails",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Insurance claim details retrieved successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InsuranceClaimResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid request"
+            }
+          }
+        }
+      },
+      "/submit-claim": {
+        "post": {
+          "summary": "Submit an insurance claim",
+          "operationId": "submitInsuranceClaim",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Claim submitted successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RepairShopList"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "QueryRequest": {
+          "type": "object",
+          "properties": {
+            "RAG": {
+              "type": "string",
+              "example": "insurance claim"
+            }
+          },
+          "required": ["RAG"]
+        },
+        "InsuranceClaimResponse": {
+          "type": "object",
+          "properties": {
+            "Name": { "type": "string" },
+            "PolicyNumber": { "type": "string" },
+            "Vehicle Make and Model": { "type": "string" },
+            "Vehicle Year": { "type": "string" },
+            "License Plate Number": { "type": "string" },
+            "Date of Incident": { "type": "string" },
+            "Time of Incident": { "type": "string" },
+            "Location of Incident": { "type": "string" },
+            "Weather Conditions": { "type": "string" },
+            "Cause of Damage": { "type": "string" },
+            "Extent of Damage": { "type": "string" },
+            "Driver's License Number": { "type": "string" },
+            "State of Driver's License": { "type": "string" },
+            "Insurance Company": { "type": "string" },
+            "Contact Information": { "type": "string" },
+            "Email Address": { "type": "string" },
+            "Incident Description": { "type": "string" },
+            "Police Report Filed": { "type": "string" },
+            "Photos of Damage": { "type": "string" },
+            "Repair or Replacement Needed": { "type": "string" },
+            "Preferred Repair Shop": { "type": "string" },
+            "Deductible Amount": { "type": "string" },
+            "Witnesses": { "type": "string" },
+            "Other Parties Involved": { "type": "string" }
+          }
+        },
+        "ClaimRequest": {
+          "type": "object",
+          "allOf": [
+            { "$ref": "#/components/schemas/InsuranceClaimResponse" }
+          ]
+        },
+        "RepairShop": {
+          "type": "object",
+          "properties": {
+            "Name": { "type": "string" },
+            "Address": { "type": "string" },
+            "Phone": { "type": "string" },
+            "Email": { "type": "string" }
+          }
+        },
+        "RepairShopList": {
+          "type": "object",
+          "properties": {
+            "message": { "type": "string", "example": "Claim submitted successfully" },
+            "recommended_repair_shops": {
+              "type": "array",
+              "items": { "$ref": "#/components/schemas/RepairShop" }
+            }
+          }
+        }
+      }
+    }
+  }
+  
