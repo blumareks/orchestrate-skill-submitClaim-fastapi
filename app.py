@@ -72,7 +72,7 @@ new_claim_no = "20250203testclaim01"
 
 @app.post("/query")
 def get_insurance_claim_details(request: QueryRequest):
-    if request.RAG == "insurance claim":
+    if request.RAG == "insuranceClaimData":
         return insurance_claim_response
     else:
         raise HTTPException(status_code=400, detail="Invalid request")
