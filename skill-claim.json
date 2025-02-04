@@ -1,66 +1,93 @@
 {
-    "openapi": "3.0.0",
+    "openapi": "3.0.1",
     "info": {
-      "title": "Insurance Claim Skill",
-      "version": "1.0.0",
-      "description": "API for querying and submitting insurance claims."
+      "title": "Submit Insurance Claim API",
+      "description": "This API allows users to submit insurance claims, retrieve claim details, and fetch all claim numbers.",
+      "version": "1.0.0"
     },
+    "servers": [
+      {
+        "url": "https://your-api-server.com",
+        "description": "Production Server"
+      }
+    ],
     "paths": {
-      "/query": {
+      "/submit-claim": {
         "post": {
-          "summary": "Retrieve insurance claim details",
-          "operationId": "getInsuranceClaimDetails",
+          "summary": "Submit a new insurance claim",
+          "operationId": "submitClaim",
           "requestBody": {
             "required": true,
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QueryRequest"
+                  "$ref": "#/components/schemas/ClaimSubmission"
                 }
               }
             }
           },
           "responses": {
-            "200": {
-              "description": "Insurance claim details retrieved successfully",
+            "201": {
+              "description": "Claim successfully submitted",
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/InsuranceClaimResponse"
+                    "$ref": "#/components/schemas/SubmitClaimResponse"
                   }
                 }
               }
-            },
-            "400": {
-              "description": "Invalid request"
             }
           }
         }
       },
-      "/submit-claim": {
-        "post": {
-          "summary": "Submit an insurance claim",
-          "operationId": "submitInsuranceClaim",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClaimRequest"
-                }
+      "/get-claim-details/{claim_no}": {
+        "get": {
+          "summary": "Retrieve claim details by claim number",
+          "operationId": "getClaimDetails",
+          "parameters": [
+            {
+              "name": "claim_no",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
               }
             }
-          },
+          ],
           "responses": {
             "200": {
-              "description": "Claim submitted successfully",
+              "description": "Claim details retrieved successfully",
               "content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/RepairShopList"
+                    "$ref": "#/components/schemas/ClaimDetails"
                   }
                 }
               }
+            },
+            "404": {
+              "description": "Claim not found"
+            }
+          }
+        }
+      },
+      "/get-claims": {
+        "get": {
+          "summary": "Retrieve all claim numbers",
+          "operationId": "getClaims",
+          "responses": {
+            "200": {
+              "description": "List of claim numbers",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetClaimsResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "No claims found"
             }
           }
         }
@@ -68,67 +95,78 @@
     },
     "components": {
       "schemas": {
-        "QueryRequest": {
-          "type": "object",
-          "properties": {
-            "RAG": {
-              "type": "string",
-              "example": "insurance claim"
-            }
-          },
-          "required": ["RAG"]
-        },
-        "InsuranceClaimResponse": {
+        "ClaimSubmission": {
           "type": "object",
           "properties": {
             "Name": { "type": "string" },
             "PolicyNumber": { "type": "string" },
-            "Vehicle Make and Model": { "type": "string" },
-            "Vehicle Year": { "type": "string" },
-            "License Plate Number": { "type": "string" },
-            "Date of Incident": { "type": "string" },
-            "Time of Incident": { "type": "string" },
-            "Location of Incident": { "type": "string" },
-            "Weather Conditions": { "type": "string" },
-            "Cause of Damage": { "type": "string" },
-            "Extent of Damage": { "type": "string" },
-            "Driver's License Number": { "type": "string" },
-            "State of Driver's License": { "type": "string" },
-            "Insurance Company": { "type": "string" },
-            "Contact Information": { "type": "string" },
-            "Email Address": { "type": "string" },
-            "Incident Description": { "type": "string" },
-            "Police Report Filed": { "type": "string" },
-            "Photos of Damage": { "type": "string" },
-            "Repair or Replacement Needed": { "type": "string" },
-            "Preferred Repair Shop": { "type": "string" },
-            "Deductible Amount": { "type": "string" },
+            "VehicleMakeAndModel": { "type": "string" },
+            "VehicleYear": { "type": "string" },
+            "LicensePlateNumber": { "type": "string" },
+            "DateOfIncident": { "type": "string" },
+            "TimeOfIncident": { "type": "string" },
+            "LocationOfIncident": { "type": "string" },
+            "WeatherConditions": { "type": "string" },
+            "CauseOfDamage": { "type": "string" },
+            "ExtentOfDamage": { "type": "string" },
+            "DriverLicenseNumber": { "type": "string" },
+            "StateOfDriverLicense": { "type": "string" },
+            "InsuranceCompany": { "type": "string" },
+            "ContactInformation": { "type": "string" },
+            "EmailAddress": { "type": "string" },
+            "IncidentDescription": { "type": "string" },
+            "PoliceReportFiled": { "type": "string" },
+            "PhotosOfDamage": { "type": "string" },
+            "RepairOrReplacementNeeded": { "type": "string" },
+            "PreferredRepairShop": { "type": "string" },
+            "DeductibleAmount": { "type": "string" },
             "Witnesses": { "type": "string" },
-            "Other Parties Involved": { "type": "string" }
+            "OtherPartiesInvolved": { "type": "string" }
           }
         },
-        "ClaimRequest": {
-          "type": "object",
-          "allOf": [
-            { "$ref": "#/components/schemas/InsuranceClaimResponse" }
-          ]
-        },
-        "RepairShop": {
+        "SubmitClaimResponse": {
           "type": "object",
           "properties": {
+            "claimNo": { "type": "string" },
+            "message": { "type": "string" }
+          }
+        },
+        "ClaimDetails": {
+          "type": "object",
+          "properties": {
+            "claimNo": { "type": "string" },
             "Name": { "type": "string" },
-            "Address": { "type": "string" },
-            "Phone": { "type": "string" },
-            "Email": { "type": "string" }
+            "PolicyNumber": { "type": "string" },
+            "VehicleMakeAndModel": { "type": "string" },
+            "VehicleYear": { "type": "string" },
+            "LicensePlateNumber": { "type": "string" },
+            "DateOfIncident": { "type": "string" },
+            "TimeOfIncident": { "type": "string" },
+            "LocationOfIncident": { "type": "string" },
+            "WeatherConditions": { "type": "string" },
+            "CauseOfDamage": { "type": "string" },
+            "ExtentOfDamage": { "type": "string" },
+            "DriverLicenseNumber": { "type": "string" },
+            "StateOfDriverLicense": { "type": "string" },
+            "InsuranceCompany": { "type": "string" },
+            "ContactInformation": { "type": "string" },
+            "EmailAddress": { "type": "string" },
+            "IncidentDescription": { "type": "string" },
+            "PoliceReportFiled": { "type": "string" },
+            "PhotosOfDamage": { "type": "string" },
+            "RepairOrReplacementNeeded": { "type": "string" },
+            "PreferredRepairShop": { "type": "string" },
+            "DeductibleAmount": { "type": "string" },
+            "Witnesses": { "type": "string" },
+            "OtherPartiesInvolved": { "type": "string" }
           }
         },
-        "RepairShopList": {
+        "GetClaimsResponse": {
           "type": "object",
           "properties": {
-            "message": { "type": "string", "example": "Claim submitted successfully" },
-            "recommended_repair_shops": {
+            "claimNos": {
               "type": "array",
-              "items": { "$ref": "#/components/schemas/RepairShop" }
+              "items": { "type": "string" }
             }
           }
         }

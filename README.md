@@ -16,8 +16,7 @@ for win OS in powershell run
 .\.venv\bin\activate
 ```
 
-pip freeze | grep -E 'fastapi|uvicorn|pydantic' > requirements.txt
-
+pip freeze | grep -E 'fastapi|uvicorn|pydantic|SQLAlchemy|python-dotenv|psycopg2-binary' > requirements.txt
 
 
 
@@ -68,6 +67,37 @@ curl --location 'http://0.0.0.0:8000/submit-claim' \
 and the response:
 
 ```json
-{"message":"Claim submitted successfully","claimNo":"20250203testclaim01","recommended_repair_shops":[{"Name":"Speedy Auto Glass","Address":"123 Glass Street, Pleasant Hill, CA","Phone":"555-987-6543","Email":"contact@speedyautoglass.com"},{"Name":"Clear View Glass Repair","Address":"456 Window Ave, Concord, CA","Phone":"555-876-5432","Email":"info@clearviewglass.com"},{"Name":"Precision Auto Glass","Address":"789 Shield Blvd, Walnut Creek, CA","Phone":"555-765-4321","Email":"service@precisionautoglass.com"},{"Name":"Safe Drive Glass Solutions","Address":"101 Windshield Rd, Oakland, CA","Phone":"555-654-3210","Email":"support@safedriveglass.com"},{"Name":"AutoGlass Experts","Address":"202 CrackFix Ln, San Francisco, CA","Phone":"555-543-2109","Email":"help@autoglassexperts.com"}]}
+{
+    "claimNo": "0c3e2998a2dc",
+    "message": "Claim submitted and stored successfully"
+}
 ```
 
+get a claim:
+```sh
+curl --location --request GET 'http://0.0.0.0:8000/get-claim-details/0c3e2998a2dc' \
+--header 'Content-Type: application/json' 
+
+```
+
+```json
+{"claimNo":"0c3e2998a2dc","Name":"Amelia Bacon","PolicyNumber":"ABCD123456789","VehicleMakeAndModel":"Ford Mustang","VehicleYear":"2022","LicensePlateNumber":"7XYZ123","DateOfIncident":"February 2, 2025","TimeOfIncident":"3:45 PM","LocationOfIncident":"Interstate 680, near Exit 40, California","WeatherConditions":"Clear and sunny","CauseOfDamage":"Flying pebble hit the windshield","ExtentOfDamage":"2-inch crack on the driver's side of windshield","DriverLicenseNumber":"CA9876543111","StateOfDriverLicense":"California","InsuranceCompany":"ABC Insurance Company","ContactInformation":"925-123-4567","EmailAddress":"amelia.bacon@gmail.com","IncidentDescription":"While driving on Interstate 680 near Exit 40, a pebble was kicked up by a passing vehicle, causing a crack in the windshield.","PoliceReportFiled":"No","PhotosOfDamage":"Yes","RepairOrReplacementNeeded":"Replacement","PreferredRepairShop":"Speedy Auto Glass, 123 Glass Street, Pleasant Hill, CA","DeductibleAmount":"$100","Witnesses":"None","OtherPartiesInvolved":"None"}
+```
+
+
+and get all the claims:
+```sh
+curl --location --request GET 'http://0.0.0.0:8000/get-claims' \
+--header 'Content-Type: application/json' 
+```
+
+
+
+```json
+{
+    "claimNos": [
+        "69a4332610bd",
+        "0c3e2998a2dc"
+    ]
+}
+```
